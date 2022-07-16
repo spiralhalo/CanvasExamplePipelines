@@ -1,0 +1,108 @@
+{
+	images: [
+		{
+			name: "smoothed_vars",
+			width: 4, // number of variables to smooth. in this example I added 1 extra for time
+			height: 1, // not that it matters, but 1 is a power of 2 too!
+			internalFormat: "R32F",
+			pixelFormat: "RED",
+			pixelDataType: "FLOAT",
+			texParams: [
+				{name: "TEXTURE_MIN_FILTER", val: "NEAREST"},
+				{name: "TEXTURE_MAG_FILTER", val: "NEAREST"}
+			]
+		},
+		{
+			// exact copy of previous frame. not using array so it works with the copy program
+			name: "smoothed_vars_previous",
+			width: 4,
+			height: 1,
+			internalFormat: "R32F",
+			pixelFormat: "RED",
+			pixelDataType: "FLOAT",
+			texParams: [
+				{name: "TEXTURE_MIN_FILTER", val: "NEAREST"},
+				{name: "TEXTURE_MAG_FILTER", val: "NEAREST"}
+			]
+		}
+	],
+
+	framebuffers: [
+		{
+			name: "smoother",
+			colorAttachments: [{image: "smoothed_vars"}]
+		},
+		{
+			name: "smoothed_vars_copy",
+			colorAttachments: [{image: "smoothed_vars_previous"}]
+		},
+		{
+			name: "test_fade",
+			colorAttachments: [{image: "solid_main"}]
+		}
+	],
+	
+	programs: [
+		{
+			name: "smoother",
+			vertexSource: "canvas:shaders/pipeline/post/simple_full_frame.vert",
+			fragmentSource: "canvas_smoother:shaders/smoother.frag",
+			samplers: [
+				"u_previous"
+			]
+		}, 
+		{
+			name: "test_fade",
+			vertexSource: "canvas:shaders/pipeline/post/simple_full_frame.vert",
+			fragmentSource: "canvas_smoother:shaders/test_fade.frag",
+			samplers: [
+				"u_base",
+				"u_smoothed_vars"
+			]
+		}, 
+	],
+
+	afterRenderHand: {
+		passes: [
+			{
+				name: "smoother",
+				framebuffer: "smoother",
+				program: "smoother",
+				// these are crucial to our success
+				width: 4,
+				height: 1,
+				samplerImages: [
+					"smoothed_vars_previous"
+				]
+			},
+			{
+				name: "smoothed_vars_copy",
+				program: "copy",
+				framebuffer: "smoothed_vars_copy",
+				// same here as everywhere
+				width: 4,
+				height: 1,
+				samplerImages: [
+					"smoothed_vars"
+				]
+			},
+			{
+				name: "main_copy",
+				program: "copy",
+				framebuffer: "main_copy",
+				samplerImages: [
+					"solid_main"
+				]
+			},
+			{
+				name: "test_fade",
+				framebuffer: "test_fade",
+				program: "test_fade",
+				samplerImages: [
+					"main_copy",
+					"smoothed_vars"
+				]
+			},
+		]
+	}
+}

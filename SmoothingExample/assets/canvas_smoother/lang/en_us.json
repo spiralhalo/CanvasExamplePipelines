@@ -1,0 +1,4 @@
+{
+	"pipeline.canvas_smoother.name": "Smoothing Example [Canvas 1.0.2410]",
+	"pipeline.canvas_smoother.desc": "Example of smoothing, check the codes. Canvas version-dependent, may not run if the version is TOO different."
+}

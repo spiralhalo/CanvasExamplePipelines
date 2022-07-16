@@ -1,0 +1,10 @@
+# whitelist mode
+*
+!/*/
+
+# track this file
+!/.gitignore
+
+# whitelist
+!/README.md
+!/SmoothingExample/**

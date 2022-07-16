@@ -1,0 +1,30 @@
+{
+	nameKey: "pipeline.canvas_smoother.name",
+	descriptionKey: "pipeline.canvas_smoother.desc",
+
+	materialProgram: {
+		vertexSource: "canvas:shaders/pipeline/standard.vert",
+		fragmentSource: "canvas:shaders/pipeline/standard.frag",
+		samplers: ["cvu_glint"],
+		samplerImages: ["minecraft:textures/misc/enchanted_item_glint.png"]
+	},
+
+	drawTargets: {
+		solidTerrain: "solid",
+		translucentTerrain: "translucent",
+		translucentEntity: "entity",
+		weather: "weather",
+		clouds: "clouds",
+		translucentParticles: "particles"
+	},
+
+	include: [
+		"canvas:pipeline/base.json5",
+		"canvas:pipeline/basic_light_config.json5",
+		"canvas:pipeline/fog_config.json5",
+		"canvas:pipeline/handheld_light_config.json5",
+		"canvas:pipeline/bloom.json5",
+		"canvas:pipeline/fabulous.json5",
+		"canvas_smoother:pipeline/main.json5"
+	]
+}
